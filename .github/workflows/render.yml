@@ -13,8 +13,8 @@ concurrency:
 jobs:
   render:
     # only the owner can start it; forks and pull requests never receive the secrets
-    # DISABLED 2026-10-17: GitHub's Actions terms forbid activity unrelated to this repository's own software project.
-    if: false
+    # only the owner can start it; forks and pull requests never receive the secrets
+    if: github.actor == 'matheusmagah-cpu' && github.repository == 'matheusmagah-cpu/heroverse-runner'
     runs-on: ubuntu-24.04
     timeout-minutes: 240
     env:
@@ -24,6 +24,7 @@ jobs:
       PILOT: ${{ inputs.pilot }}
       RUN_LABEL: runner ${{ github.run_id }}
       OMP_NUM_THREADS: '4'
+      PUBLIC_LOGS: '1'   # public log shows only stage names and pass/fail; details go to a private log
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
