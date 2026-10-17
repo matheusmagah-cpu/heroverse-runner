@@ -13,7 +13,8 @@ concurrency:
 jobs:
   render:
     # only the owner can start it; forks and pull requests never receive the secrets
-    if: github.actor == 'matheusmagah-cpu' && github.repository == 'matheusmagah-cpu/heroverse-runner'
+    # DISABLED 2026-10-17: GitHub's Actions terms forbid activity unrelated to this repository's own software project.
+    if: false
     runs-on: ubuntu-24.04
     timeout-minutes: 240
     env:
