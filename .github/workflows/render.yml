@@ -3,8 +3,8 @@ on:
   schedule:
     # nightly chain: images 00:30 UTC (engine), renders from 01:00; each run takes the next pilot of the
     # engine's queue (render_queue.py: publishes within 48 h, images complete, no render for the current script)
-    - cron: '0 1 * * *'
-    - cron: '30 3 * * *'
+    # hourly: GitHub may delay or skip a scheduled run; an empty queue exits in seconds (public repo, no minute cap)
+    - cron: '7 * * * *'
   workflow_dispatch:
     inputs:
       pilot:
