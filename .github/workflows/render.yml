@@ -1,4 +1,5 @@
 name: HeroVerse render (execution runner)
+run-name: ${{ inputs.dispatch_key && format('engine-wake {0}', inputs.dispatch_key) || 'HeroVerse render (execution runner)' }}
 on:
   schedule:
     # nightly chain: images 00:30 UTC (engine), renders from 01:00; each run takes the next pilot of the
@@ -9,6 +10,9 @@ on:
     - cron: '13,43 * * * *'
   workflow_dispatch:
     inputs:
+      dispatch_key:
+        description: Opaque engine wake-up correlation hash; not a pilot selection or approval
+        required: false
       pilot:
         description: Pilot directory in the private engine (e.g. pilot-002); empty = the next one in the queue
         required: false
