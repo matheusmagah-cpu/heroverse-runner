@@ -14,7 +14,7 @@ on:
         description: Opaque engine wake-up correlation hash; not a pilot selection or approval
         required: false
       pilot:
-        description: Pilot directory in the private engine (e.g. pilot-002); empty = the next one in the queue
+        description: Pilot directory in the engine (e.g. pilot-002); empty = the next one in the queue
         required: false
 permissions:
   contents: read
@@ -23,7 +23,6 @@ concurrency:
   cancel-in-progress: false
 jobs:
   render:
-    # only the owner can start it; forks and pull requests never receive the secrets
     # only the owner can start it; forks and pull requests never receive the secrets
     if: github.actor == 'matheusmagah-cpu' && github.repository == 'matheusmagah-cpu/heroverse-runner'
     runs-on: ubuntu-24.04
@@ -35,7 +34,7 @@ jobs:
       INPUT_PILOT: ${{ inputs.pilot }}
       RUN_LABEL: runner ${{ github.run_id }}
       OMP_NUM_THREADS: '4'
-      PUBLIC_LOGS: '1'   # public log shows only stage names and pass/fail; details go to a private log
+      PUBLIC_LOGS: '1'   # limits console output; uploaded logs inherit the engine release's visibility
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
@@ -48,7 +47,7 @@ jobs:
           [ -n "$PILOT" ] || PILOT=$(python3 -I -B migration/production/render_queue.py migration/production migration/publish/ledger.json render 48)
           if [ -z "$PILOT" ]; then echo "QUEUE_EMPTY"; echo "SKIP=1" >> "$GITHUB_ENV"; exit 0; fi
           echo "PILOT=$PILOT" >> "$GITHUB_ENV"
-      - name: Render, Shorts, QA, package, record (writes back to the private engine)
+      - name: Render, Shorts, QA, package, record (writes back to the engine)
         if: env.SKIP != '1'
         env:
           HERO_GEMINI_API_KEY: ${{ secrets.HERO_GEMINI_API_KEY }}
